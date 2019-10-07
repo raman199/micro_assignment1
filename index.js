@@ -18,21 +18,22 @@ var server = restify.createServer();
 server.use(restify.plugins.bodyParser({ mapParams: false }));
 
 // starting server
-server.listen(8080, function() {
+server.listen(3009, function() {
   console.log('%s listening at %s', server.name, server.url);
 
 });
 
 
 // GET request
-server.get('/users', getAllUsers);
+server.get('/products', getAllProducts);
 
 // POST request
-server.post('/users', addNewUser);
+server.post('/products', addNewProducts);
+server.del('/products',deleteAllProducts);
 
 
 // callback function mapped to GET request
-function getAllUsers(req, res, next) {
+function getAllProducts(req, res, next) {
     productsSave.find({},null, function(err, foundUsers){
         // send 200 HTTP response code and array of found users
         res.send(200, foundUsers);
@@ -41,13 +42,27 @@ function getAllUsers(req, res, next) {
 }
 
 // callback function mapped to POST request
-function addNewUser(req, res, next) {
+function addNewProducts(req, res, next) {
     // json payload of the request
     var newUser =  req.body;
 
     productsSave.create(newUser, function(err, user){
         // send 201 HTTP response code and created user object
         res.send(201, user);
+        next();
+    })
+}
+// callback function mapped to DELEte request
+function deleteAllProducts(req, res, next) {
+    // json payload of the request
+
+    console.log("Deleting All products");
+
+    productsSave.deleteMany({}, function(err, Products){
+           console.log("error"+ err);
+           console.log("Deleted products")
+        // send 201 HTTP response code and created user object
+        res.send(201, Products);
         next();
     })
 }
