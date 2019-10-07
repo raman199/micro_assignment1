@@ -9,6 +9,9 @@ var restify = require('restify');
 var save = require('save')
 var productsSave = save('products')
 
+var requestCounterGet = 0;
+var requestCounterPost = 0;
+
 var server = restify.createServer();
 
 // configure request body parser
