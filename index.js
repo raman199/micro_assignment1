@@ -20,7 +20,8 @@ server.use(restify.plugins.bodyParser({ mapParams: false }));
 // starting server
 server.listen(3009, function() {
   console.log('%s listening at %s', server.name, server.url);
-
+  console.log('Endpoints:')
+  console.log('%s/products method: GET, POST, DELETE', server.url)
 });
 
 
@@ -33,25 +34,53 @@ server.del('/products',deleteAllProducts);
 
 
 // callback function mapped to GET request
+/*
 function getAllProducts(req, res, next) {
-    productsSave.find({},null, function(err, foundUsers){
+    requestCounterGet++;
+    console.log("Request counter: " + requestCounterGet);
+    console.log("sending request");
+
+    productsSave.find({},null, function(err, foundProducts){
+        var requestCounterString = " ======> Request Count: " + requestCounterGet + "\n=======";
         // send 200 HTTP response code and array of found users
-        res.send(200, foundUsers);
+        res.send(200, foundProducts);
+        console.log("received request");
+        next();
+    })
+} */
+
+// callback function mapped to GET request
+function getAllProducts(req, res, next) {
+      requestCounterGet++;
+    console.log("  GET Request counter: " +  requestCounterGet);
+    console.log("sending GET request")
+    productsSave.find({},null, function(err, foundProducts){
+        var requestCounterString = "==> GET Request Count: " + requestCounterGet + "\n======================================";
+        // send 200 HTTP response code and array of found products
+        res.send(200, foundProducts);
+        console.log("GET request receive");
         next();
     })
 }
 
 // callback function mapped to POST request
 function addNewProducts(req, res, next) {
+        requestCounterPost++;
+        console.log("  POST Request counter: " +  requestCounterPost);
+    console.log(" sending POST request")
     // json payload of the request
-    var newUser =  req.body;
+    var newProduct = req.body;
 
-    productsSave.create(newUser, function(err, user){
-        // send 201 HTTP response code and created user object
-        res.send(201, user);
+    productsSave.create(newProduct, function(err, product){
+        var requestCounterString = "======>POST Request Count: " + requestCounterPost + "\n======================================";
+        console.log("Created new products")
+        // send 201 HTTP response code and created product object
+        res.send(201, product);
         next();
     })
 }
+
+
 // callback function mapped to DELEte request
 function deleteAllProducts(req, res, next) {
     // json payload of the request
